@@ -1,6 +1,4 @@
-# projeto-FDCO2B
-
-# 📚 TRIVIA: Conteúdos Tecnológicos e Históricos da Computação — FDCO2B
+# 📚 PERFIL: Conteúdos Tecnológicos e Históricos da Computação — FDCO2B
 
 ## 📝 Descrição
 
