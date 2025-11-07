@@ -8,6 +8,29 @@ O sistema permite cadastrar perguntas, carregá-las de arquivos CSV, realizar bu
 
 ---
 
+## 🎮 Mecânica do Jogo – "Modo Perfil / Adivinhação de Personagem"
+O jogo seleciona aleatoriamente um personagem histórico (por exemplo: *Alan Turing*).
+
+1. 💡 É exibida uma dica sobre o personagem  
+   *(Exemplo: “Matemático britânico, considerado o pai da computação moderna.”)*
+
+2. 🧩 O jogador digita seu palpite:  
+   - Se acertar → ganha pontos e passa para o próximo personagem  
+   - Se errar → perde uma tentativa ou tempo restante  
+
+3. ⚙️ O jogador pode utilizar **ajudas**, que afetam a pontuação final.
+
+---
+
+## 💡 Ideias de Ajudas e Funcionalidades Criativas
+-  **Revelar Letra:** mostra uma letra do nome do personagem (reduz pontos).  
+-  **Nova Dica:** fornece uma nova pista ou contexto adicional.  
+-  **Pular Personagem:** troca o personagem atual (com penalidade de pontuação).  
+-  **Sistema de Ranking:** exibe os jogadores com maiores pontuações.  
+-  **Pontuação Estratégica:** usar menos ajudas resulta em mais pontos.  
+
+---
+
 ## 💻 Linguagem, Conteúdo e Dependências
 
 - **Linguagem:** C (Padrão C11)
