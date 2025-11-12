@@ -34,4 +34,56 @@ typedef struct{
     int capacidadeArmazenamento;
 }BancoInformacoes;
 
+/**
+ * @brief Lê uma string do usuário de forma segura, convertendo-a para minúsculas.
+ */
+void lerString(char texto[], int tamanho);
+
+/**
+ * @brief Inicializa a estrutura BancoInformacoes alocando memória dinâmica.
+ */
+BancoInformacoes* incializarBanco(void);
+
+/**
+ * @brief Libera toda a memória alocada pelo BancoInformacoes.
+ */
+void liberarBanco(BancoInformacoes *banco);
+
+/**
+ * @brief Insere um novo item no banco de informações.
+ */
+void inserirItem(BancoInformacoes *banco);
+
+/**
+ * @brief Lista todos os itens armazenados no banco.
+ */
+void listarItens(BancoInformacoes *banco);
+
+/**
+ * @brief Altera os dados de um item existente no banco.
+ */
+void alterarItem(BancoInformacoes *banco);
+
+/**
+ * @brief Pesquisa um item pelo nome (resposta).
+ */
+void pesquisaItem(BancoInformacoes *banco);
+
+/**
+ * @brief Exclui um item do banco de informações.
+ */
+void excluirItem(BancoInformacoes *banco);
+
+/**
+ * @brief Salva os itens do banco em um arquivo binário.
+ */
+void salvarItensBinario(BancoInformacoes *banco, const char *nomeArquivo);
+
+/**
+ * @brief Carrega os itens de um arquivo binário para a memória.
+ */
+BancoInformacoes* carregarItensBinario(const char *nomeArquivo);
+
 #endif
+
+
