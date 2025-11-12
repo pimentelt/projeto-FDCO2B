@@ -2,7 +2,7 @@
 #define FUNCOES_H
 
 #define MAX_DICAS 5
-#define TAM_MAX_DICA 202
+#define TAM_MAX_DICA 200
 #define TAM_MAX_RESPOSTA 102
 #define TAM_MAX_CATEGORIA 102
 
@@ -85,6 +85,7 @@ void salvarItensBinario(BancoInformacoes *banco, const char *nomeArquivo);
 BancoInformacoes* carregarItensBinario(const char *nomeArquivo);
 
 #endif
+
 
 
 
