@@ -1,11 +1,25 @@
 /**
  * @file funcoes.c
  * @author Tarsila Paiva Pimentel
- * @brief Implementações das funções de gerenciamento de itens e banco do jogo Perfil.
- * Este arquivo contém funções para:
- * - Ler strings do usuário de forma segura.
- * - Inicializar e liberar o banco dinâmico de itens.
- * - Inserir novos itens no banco, incluindo nome, categoria, dicas e dificuldade.
+ * @brief Implementações das funções de gerenciamento de itens e do banco de dados do jogo *Perfil*.
+ * 
+ * Este módulo contém a implementação completa das rotinas responsáveis por gerenciar o banco dinâmico
+ * de itens utilizados no jogo *Perfil*. Abrange desde a leitura de dados e manipulação de memória até
+ * a persistência em arquivos binários.
+ * 
+ * As principais funcionalidades incluem:
+ * 
+ * - Leitura segura de strings a partir da entrada padrão, com normalização de caixa.
+ * - Inicialização e liberação do banco de informações dinâmico.
+ * - Inserção, listagem, pesquisa, alteração e exclusão de itens no banco.
+ * - Salvamento e carregamento dos dados em arquivos binários, preservando o estado do jogo.
+ * 
+ * O arquivo faz uso de alocação dinâmica de memória (`malloc`, `realloc`, `free`) e controle de erros
+ * básico, garantindo maior robustez durante as operações de inserção e expansão do banco de dados.
+ * 
+ * @note Requer o cabeçalho correspondente **funcoes.h**, que define as estruturas, tipos e constantes
+ * utilizados em todas as funções aqui implementadas.
+ * 
  * @version 0.1
  * @date 2025-11-03
  * 
@@ -259,3 +273,166 @@ void alterarItem(BancoInformacoes *banco){
     printf("[Aviso] Nenhum item encontrado com o nome informado.\n");
 }
 
+/**
+ * @brief 
+ * 
+ * @param banco 
+ */
+void pesquisaItem(bancoInformacoes *banco){
+    if (banco == NULL || banco-> totalItens == 0){
+        printf("[Erro] O banco de informaçôes está vazio.\n");
+        return;
+    }
+    char buscaTemporario[TAM_MAX_RESPOSTA];
+    printf("Digite o nome do item a ser pesquisado.\n");
+    lerString(buscaTemporario, TAM_MAX_RESPOSTA);
+    for (int i = 0; i < banco->totalItens; i++){
+        if (strcmp(banco.itens[i]->resposta, buscaTemporario) == 0){
+            printf("Item encontrado\n");
+        }
+        
+    }
+}
+
+/**
+ * @brief Exclui um item (registro) do banco de informações baseado na sua resposta.
+ * * Esta função solicita ao usuário a 'resposta' (nome) do item que deseja excluir.
+ * Se o item for encontrado, pede confirmação antes de realizar a exclusão.
+ * A exclusão é feita deslocando os elementos subsequentes na lista para
+ * preencher a lacuna e decrementando o total de itens.
+ *
+ * @param banco Um ponteiro para a estrutura BancoInformacoes que contém os itens.
+ * Não deve ser NULL e deve ter totalItens > 0 para prosseguir.
+ * * @return void
+ */
+void excluirItem(BancoInformacoes *banco){
+    if (banco == NULL || banco->totalItens == 0){
+        printf("[Erro] Não há itens cadastrados para exclusão.\n");
+        return;
+    }
+
+    char busca[TAM_MAX_RESPOSTA];
+    printf("Digite o nome (resposta) do item que deseja excluir:\n");
+    lerString(busca, TAM_MAX_RESPOSTA);
+
+    for (int i = 0; i < banco->totalItens; i++){
+        if (strcmp(banco->itens[i].resposta, busca) == 0){
+            printf("\nItem encontrado: %s\n", banco->itens[i].resposta);
+            printf("Deseja realmente excluir este item? (s/n): ");
+            char opcao;
+            scanf(" %c", &opcao);
+            setbuf(stdin, NULL);
+            if (tolower(opcao) != 's'){
+                printf("[Aviso] Exclusão cancelada pelo usuário.\n");
+                return;
+            }
+
+            // Desloca os itens seguintes para preencher o espaço
+            for (int j = i; j < banco->totalItens - 1; j++){
+                banco->itens[j] = banco->itens[j + 1];
+            }
+            banco->totalItens--;
+
+            printf("[OK] Item excluído com sucesso! Total atual: %d\n", banco->totalItens);
+            return;
+        }
+    }
+    printf("[Aviso] Nenhum item encontrado com o nome informado.\n");
+}
+
+/**
+ * @brief Salva todos os itens do banco em um arquivo binário.
+ *
+ * Esta função grava em disco a estrutura BancoInformacoes, incluindo:
+ * - O número total de itens cadastrados.
+ * - O conteúdo completo do array dinâmico de itens.
+ *
+ * O arquivo é salvo no modo binário ("wb") e pode ser recarregado
+ * posteriormente pela função carregarItensBinario().
+ *
+ * @param banco Ponteiro para a estrutura BancoInformacoes a ser salva.
+ * @param nomeArquivo Nome do arquivo binário (ex: "banco_itens.bin").
+ *
+ * @return void Esta função não retorna valor.
+ */
+void salvarItensBinario(BancoInformacoes *banco, const char *nomeArquivo){
+    if (banco == NULL || banco->totalItens == 0){
+        printf("[Erro] Nenhum item disponível para salvar.\n");
+        return;
+    }
+
+    FILE *arquivo = fopen(nomeArquivo, "wb");
+    if (arquivo == NULL){
+        printf("[Erro] Não foi possível abrir o arquivo '%s' para escrita.\n", nomeArquivo);
+        return;
+    }
+
+    fwrite(&banco->totalItens, sizeof(int), 1, arquivo);
+
+    size_t itensGravados = fwrite(banco->itens, sizeof(Item), banco->totalItens, arquivo);
+    if (itensGravados != banco->totalItens){
+        printf("[Erro] Nem todos os itens foram salvos corretamente.\n");
+    } else {
+        printf("[OK] %d itens salvos com sucesso em '%s'.\n", banco->totalItens, nomeArquivo);
+    }
+
+    fclose(arquivo);
+}
+
+/**
+ * @brief Carrega os itens previamente salvos de um arquivo binário.
+ *
+ * Esta função:
+ * 1. Abre o arquivo binário no modo leitura ("rb").
+ * 2. Lê o total de itens armazenados.
+ * 3. Aloca dinamicamente o espaço necessário para todos os itens.
+ * 4. Carrega os dados diretamente na estrutura BancoInformacoes.
+ *
+ * Caso o arquivo não exista ou haja erro de leitura, o banco é inicializado vazio.
+ *
+ * @param nomeArquivo Nome do arquivo binário (ex: "banco_itens.bin").
+ *
+ * @return BancoInformacoes* Retorna ponteiro para a estrutura BancoInformacoes carregada.
+ */
+BancoInformacoes* carregarItensBinario(const char *nomeArquivo){
+    FILE *arquivo = fopen(nomeArquivo, "rb");
+    if (arquivo == NULL){
+        printf("[Aviso] Arquivo '%s' não encontrado. Um novo banco será criado.\n", nomeArquivo);
+        return incializarBanco(); // cria um banco vazio
+    }
+
+    int totalItensLidos;
+    if (fread(&totalItensLidos, sizeof(int), 1, arquivo) != 1){
+        printf("[Erro] Falha ao ler o número total de itens.\n");
+        fclose(arquivo);
+        return incializarBanco();
+    }
+
+    BancoInformacoes *banco = malloc(sizeof(BancoInformacoes));
+    if (banco == NULL){
+        printf("[Erro] Falha na alocação de memória para o banco.\n");
+        fclose(arquivo);
+        return NULL;
+    }
+
+    banco->totalItens = totalItensLidos;
+    banco->capacidadeArmazenamento = (totalItensLidos > 10) ? totalItensLidos : 10;
+    banco->itens = malloc(banco->capacidadeArmazenamento * sizeof(Item));
+
+    if (banco->itens == NULL){
+        printf("[Erro] Falha na alocação de memória para os itens.\n");
+        free(banco);
+        fclose(arquivo);
+        return NULL;
+    }
+
+    size_t itensLidos = fread(banco->itens, sizeof(Item), totalItensLidos, arquivo);
+    if (itensLidos != totalItensLidos){
+        printf("[Aviso] Nem todos os itens foram lidos corretamente. O banco pode estar incompleto.\n");
+    } else {
+        printf("[OK] %d itens carregados com sucesso de '%s'.\n", totalItensLidos, nomeArquivo);
+    }
+
+    fclose(arquivo);
+    return banco;
+}
