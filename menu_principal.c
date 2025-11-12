@@ -1,123 +1,137 @@
-#include <stdio.h> 
-#include <stdlib.h>
-#include <string.h>
-#include "funcoes.h"
-#include <time.h>
-
-#define NOME_ARQUIVO_BINARIO "questoes_adivinha.bin"
-#define NOME_ARQUIVO_CSV "questoesjogoadvinhacao.csv"
-
 /*
-Para gerenciar uma coleção de perguntas para o jogo, defina uma estrutura Pergunta
-contendo, no mínimo: palavra (texto), uma ou mais dicas (texto), nível de dificuldade. O
-sistema deverá permitir cadastrar (inserir/ listar/ pesquisar/ alterar/ excluir) as palavras
-disponíveis. Essa relação deve aumentar e diminuir dinamicamente.
-*/
+ 
+ * Este arquivo contém a função main() e o loop de menu que permite
+ * ao usuário interagir com as funções de gerenciamento de itens
+ * (CRUD - Create, Read, Update, Delete) e persistência de dados.
+ 
+ */
 
-int main(){
+#include <stdio.h>
+#include <stdlib.h> // Para system("clear") ou system("cls") e EXIT_SUCCESS
+#include "funcoes.h" // Inclui todas as suas definições e protótipos
 
+// Define o nome do arquivo binário onde os dados serão salvos.
+// Usar uma constante facilita a manutenção.
+#define NOME_ARQUIVO_BIN "banco_perfil.bin"
+
+/**
+ * @brief Limpa a tela do console de forma portável (Linux/Mac/Windows).
+ */
+void limparTela() {
+    #ifdef _WIN32
+        system("cls");
+    #else
+        system("clear");
+    #endif
+}
+
+/**
+ * @brief Exibe o menu principal de opções para o usuário.
+ */
+void exibirMenu() {
+    printf("\n====== JOGO PERFIL - GERENCIADOR DE ITENS ======\n");
+    printf("1. Inserir novo item\n");
+    printf("2. Listar todos os itens\n");
+    printf("3. Alterar um item\n");
+    printf("4. Pesquisar um item\n");
+    printf("5. Excluir um item\n");
+    printf("0. Salvar e Sair\n");
+    printf("==============================================\n");
+    printf("Escolha uma opção: ");
+}
+
+/**
+ * @brief Lê um número inteiro do usuário e limpa o buffer de entrada (stdin).
+ *
+ * Isso é crucial para evitar que o '\n' (Enter) deixado pelo scanf
+ * atrapalhe as futuras chamadas da sua função lerString (que usa fgets).
+ *
+ * @return int A opção numérica escolhida pelo usuário.
+ */
+int obterOpcao() {
     int opcao;
-    srand(time(NULL));
-
-    Pergunta* dadosDoJogo = NULL;
-    int totalPergunta = 0;//contador de perguntas
     
-    // 1. Carregar as perguntas do arquivo CSV primeiro
-    
-    printf("Tentando carregar perguntas do arquivo CSV: '%s'...\n", NOME_ARQUIVO_CSV);
-    dadosDoJogo = carregarArquivoCSV(NOME_ARQUIVO_CSV, &totalPergunta);
-
-    // Verifica se o carregamento do CSV falhou ou se o arquivo estava vazio
-    if (dadosDoJogo == NULL || totalPergunta == 0) {
-
-        printf("Nenhuma pergunta carregada do CSV. Iniciando com um banco de dados vazio.\n");
-
-        // Alocar uma capacidade inicial se nenhum arquivo foi carregado
-        dadosDoJogo = (Pergunta*) malloc(50 * sizeof(Pergunta));
-
-        if (dadosDoJogo == NULL) {
-
-            perror("Erro ao alocar memoria inicial para perguntas.");
-            exit(1);
-        }
-
-        totalPergunta = 0; // Garante que o contador está em zero
-
-    } else {
-
-        printf("Carregadas %d perguntas do arquivo CSV.\n", totalPergunta);
+    // Tenta ler um inteiro. Se o usuário digitar letras, scanf falha.
+    if (scanf("%d", &opcao) != 1) {
+        opcao = -1; // Define uma opção inválida para forçar o 'default' no switch
     }
 
-    do
-    {
-        printf(" 1 - Inserir Pergunta \n");
-        printf(" 2 - Listar Perguntas  \n");
-        printf(" 3 - Alterar Pergunta \n" );
-        printf(" 4 - Pesquisar Pergunta \n" );
-        printf(" 5 - Excluir Pergunta \n" );
-        printf(" 6 - Jogar \n");
-        printf(" 7 - Carregar dados do jogo em arquivo CSV(modo texto) \n");
-        printf(" 0 - Sair \n");
-        printf("Escolha uma opcao: \n");
-        scanf("%d",&opcao);
-        setbuf(stdin, NULL); // Limpa o buffer do teclado
+    // Limpa qualquer caractere restante no buffer de entrada,
+    // principalmente o '\n' (Enter).
+    int c;
+    while ((c = getchar()) != '\n' && c != EOF);
 
-        switch (opcao){
+    return opcao;
+}
 
+/**
+ * @brief Função principal que executa o loop do menu.
+ */
+int main() {
+    // Tenta carregar o banco de dados do arquivo.
+    // Conforme sua função, se o arquivo não existir, ele cria um banco novo.
+    BancoInformacoes *banco = carregarItensBinario(NOME_ARQUIVO_BIN);
+
+    // Verificação crítica: se a alocação de memória falhou no carregamento/inicialização
+    if (banco == NULL) {
+        printf("[Erro Crítico] Não foi possível alocar memória para o banco. Saindo.\n");
+        return EXIT_FAILURE; // Termina o programa com código de erro
+    }
+
+    int opcao;
+
+    do {
+        limparTela();
+        exibirMenu();
+        opcao = obterOpcao();
+
+        switch (opcao) {
             case 1:
-                dadosDoJogo = inserirPergunta(dadosDoJogo,&totalPergunta);
+                printf("\n--- Inserir Item ---\n");
+                inserirItem(banco);
                 break;
-
             case 2:
-                listaPerguntas(dadosDoJogo,totalPergunta);
+                printf("\n--- Listar Itens ---\n");
+                listarItens(banco);
                 break;
-
-            case 3: 
-                alteraPergunta(dadosDoJogo,&totalPergunta);
+            case 3:
+                printf("\n--- Alterar Item ---\n");
+                alterarItem(banco);
                 break;
-
             case 4:
-                pesquisarPergunta(dadosDoJogo,totalPergunta);
+                printf("\n--- Pesquisar Item ---\n");
+                pesquisaItem(banco);
                 break;
-
             case 5:
-
-                excluirPergunta(dadosDoJogo, &totalPergunta);
-                break;    
-        
-            case 6:
-
-                printf("---- Bem Vindos ao Jogo de Adivinhação!! ----\n");
-                printf("Vamos abordar o tema: História e Curiosidades da Computação, especialmente mulheres na computação!\n");
-                printf("Vamos jogar!\n");
-                printf("O jogo comeca na dificuldade mais facil, e quando voce utilizar alguma das ajudas tem a diminuição do jogo.\n");
-                printf("Boa sorte!\n");
-                
-                jogar(dadosDoJogo,totalPergunta);
-
+                printf("\n--- Excluir Item ---\n");
+                excluirItem(banco);
                 break;
-
-            case 7:
-
-                printf("Salvando dados do jogo para um arquivo CSV(modo texto).... \n");
-                dadosDoJogo = carregarArquivoCSV(NOME_ARQUIVO_CSV, &totalPergunta);
-            
             case 0:
-
-                printf("Saindo do Jogo...\n");
-                salvarPerguntasBinario(NOME_ARQUIVO_BINARIO, dadosDoJogo, totalPergunta);
-                break;
-
+                printf("\n--- Salvando e Saindo ---\n");
+                break; // Apenas sai do loop
             default:
-
-                printf("Opcao invalida, tente novamente !\n");
+                printf("\n[Erro] Opção inválida! Por favor, tente novamente.\n");
                 break;
+        }
 
-        }//switch
+        if (opcao != 0) {
+            printf("\nPressione Enter para continuar...");
+            getchar(); // Pausa o programa esperando o usuário
+        }
 
-    }//do 
-    while (opcao != 0 );
+    } while (opcao != 0);
 
-    free(dadosDoJogo);
-    return 0;
+    // --- Seção de Encerramento ---
+    
+    // 1. Salva o estado atual do banco no arquivo binário
+    printf("Salvando dados em '%s'...\n", NOME_ARQUIVO_BIN);
+    salvarItensBinario(banco, NOME_ARQUIVO_BIN);
+
+    // 2. Libera toda a memória alocada
+    printf("Liberando memória...\n");
+    liberarBanco(banco);
+    banco = NULL; // Boa prática para evitar 'dangling pointers'
+
+    printf("Até logo!\n");
+    return EXIT_SUCCESS; // Termina o programa com sucesso
 }
