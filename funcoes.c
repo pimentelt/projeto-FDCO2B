@@ -74,7 +74,7 @@ BancoInformacoes* incializarBanco(){
         return NULL;
     }
     
-    banco->capacidadeArmazenamento = 10;//Valor abitrário de capacidade inicial
+    banco->capacidadeArmazenamento = 40;//Valor abitrário de capacidade inicial
     banco->totalItens = 0;
     banco->itens = malloc(banco->capacidadeArmazenamento * sizeof(Item));
 
@@ -85,6 +85,26 @@ BancoInformacoes* incializarBanco(){
     }
     return banco;
 }
+
+void leArquivoCSV(BancoInformacoes incializarBanco, Item dadosBase){
+
+
+    FILE* arqivoLeCSV = fopen("dados_jogoadvinhacao.csv", "w");
+    
+    for (int i = 0; i <  ; i++){
+        
+        fscanf(arqivoLeCSV,"%s ",dadosBase[i].resposta);
+        fscanf(arqivoLeCSV,"%s ",dadosBase[i].nivel);
+
+    }
+    
+
+
+    return;
+}
+
+
+
 
 /**
  * @brief Libera a memória alocada dinamicamente para a estrutura BancoInformacoes.
