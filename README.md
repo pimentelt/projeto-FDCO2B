@@ -38,7 +38,7 @@ O jogo seleciona aleatoriamente um personagem histórico (por exemplo: *Alan Tur
 - **Formato de dados:** CSV (entrada), binário (salvamento futuro)
 - **Plataforma:** Linux ou Windows (modo texto)
 - **Compilador sugerido:** GCC
-- **Compilar:** gcc menu_principal.c funcoes.c -o main
+- **Comando para compilar:** gcc menu_principal.c funcoes.c -o main
 ---
 
 ## 📋 Integrantes
