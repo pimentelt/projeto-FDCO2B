@@ -12,6 +12,7 @@
  * - Leitura segura de strings a partir da entrada padrão, com normalização de caixa.
  * - Inicialização e liberação do banco de informações dinâmico.
  * - Inserção, listagem, pesquisa, alteração e exclusão de itens no banco.
+ * - Leitura do arquivo CSV
  * - Salvamento e carregamento dos dados em arquivos binários, preservando o estado do jogo.
  * 
  * O arquivo faz uso de alocação dinâmica de memória (`malloc`, `realloc`, `free`) e controle de erros
@@ -149,8 +150,8 @@ void liberarBanco(BancoInformacoes *banco){
  *
  * @return void Esta função não retorna valor.
  */
-void inserirItem(BancoInformacoes *banco){
-    if (*banco == NULL) return;
+void inserirItem(BancoInformacoes* banco){
+    if (banco == NULL) return;
     if (banco->totalItens >= banco->capacidadeArmazenamento){
         int novaCapacidade = banco->capacidadeArmazenamento * 2;
         Item *novoArray = realloc(banco->totalItens, novaCapacidade * sizeof(Item));
@@ -172,7 +173,7 @@ void inserirItem(BancoInformacoes *banco){
         scanf("%d", &nivelTemporario);
         setbuf(stdin, NULL);
         if (nivelTemporario < 1 || nivelTemporario > 5){
-            printf("[Erro] O nível deve estar entre 1 e 5. Digite novamente:\n")
+            printf("[Erro] O nível deve estar entre 1 e 5. Digite novamente:\n");
         }
         
     } while (nivelTemporario < 1 || nivelTemporario > 5);
@@ -220,7 +221,7 @@ void listarItens(BancoInformacoes *banco){
             default:           printf("[Indefinido]\n"); break;
         }
     }
-    printf("Total de dicas: %d\n", item->totalDicas);
+    printf("Total de dicas: %d\n", (*banco).itens->totalDicas);
     printf("======================================\n\n");
 }
 
@@ -302,7 +303,7 @@ void alterarItem(BancoInformacoes *banco){
  * 
  * @param banco 
  */
-void pesquisaItem(bancoInformacoes *banco){
+void pesquisaItem(BancoInformacoes *banco){
     if (banco == NULL || banco-> totalItens == 0){
         printf("[Erro] O banco de informaçôes está vazio.\n");
         return;
@@ -310,8 +311,8 @@ void pesquisaItem(bancoInformacoes *banco){
     char buscaTemporario[TAM_MAX_RESPOSTA];
     printf("Digite o nome do item a ser pesquisado.\n");
     lerString(buscaTemporario, TAM_MAX_RESPOSTA);
-    for (int i = 0; i < banco->totalItens; i++){
-        if (strcmp(banco.itens[i]->resposta, buscaTemporario) == 0){
+    for (int i = 0; i < (*banco).totalItens; i++){
+        if (strcmp((*banco)[i].itens->resposta, buscaTemporario) == 0){
             printf("Item encontrado\n");
         }
         
