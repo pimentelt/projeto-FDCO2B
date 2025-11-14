@@ -7,7 +7,8 @@ int main(){
     printf("Bora advinhar!!");
     BancoInformacoes iformacoes;
     BancoInformacoes* incializarBanco(void);
-
+    Item dadosAdvinha;
+    
     int opcao;
 
     do{
@@ -42,7 +43,7 @@ int main(){
             break;    
         case 6:
             printf("Vamos jogar!\n");
-            jogar(perguntasDoJogo,totalPergunta);
+          //coloca a função  que roda o jogo
             break;
         case 0:
             printf("Salvando dados do jogo para um arquivo binario.... \n");

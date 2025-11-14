@@ -14,7 +14,11 @@ typedef enum {MUITOFACIL = 1, FACIL, MEDIO, DIFICIL, MUITODIFICIL}Dificuldade;
  */
 typedef struct{
     char resposta[TAM_MAX_RESPOSTA];
-    char dica[TAM_MAX_DICA];
+    char dica1[TAM_MAX_DICA];
+    char dica2[TAM_MAX_DICA];
+    char dica3[TAM_MAX_DICA];
+    char dica4[TAM_MAX_DICA];
+    char dica5[TAM_MAX_DICA];
     char categoria[TAM_MAX_CATEGORIA];
     int quantidadeDicas[MAX_DICAS][TAM_MAX_DICA];
     int totalDicas;
