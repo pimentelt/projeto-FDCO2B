@@ -91,3 +91,5 @@ BancoInformacoes* carregarItensBinario(const char *nomeArquivo);
 #endif
 
 
+
+
