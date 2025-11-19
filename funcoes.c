@@ -251,7 +251,7 @@ void alterarItem(BancoInformacoes *banco){
     }
 
     char busca[TAM_MAX_RESPOSTA];
-    printf("Digite o nome (resposta) do item que deseja alterar:\n");
+    printf("Digite o nome (resposta) do item que deseja alterar: ");
     lerString(busca, TAM_MAX_RESPOSTA);
     for (int i = 0; i < banco->totalItens; i++){
         if (strcmp(banco->itens[i].resposta, busca) == 0){
@@ -260,7 +260,7 @@ void alterarItem(BancoInformacoes *banco){
             printf("Categoria: %s\n", banco->itens[i].categoria);
             printf("Nível de Dificuldade: %d\n", banco->itens[i].nivel);
 
-            printf("\nDeseja alterar a resposta? (s/n):\n");
+            printf("\nDeseja alterar a resposta? (digite s para sim e n para não): ");
             char opcao;
             scanf(" %c", &opcao);
             setbuf(stdin, NULL);
@@ -269,7 +269,7 @@ void alterarItem(BancoInformacoes *banco){
                 lerString(banco->itens[i].resposta, TAM_MAX_RESPOSTA);
             }
 
-            printf("Deseja alterar a categoria? (s/n):\n");
+            printf("Deseja alterar a categoria? (digite s para sim e n para não): ");
             scanf(" %c", &opcao);
             setbuf(stdin, NULL);
             if (tolower(opcao) == 's'){
@@ -277,7 +277,7 @@ void alterarItem(BancoInformacoes *banco){
                 lerString(banco->itens[i].categoria, TAM_MAX_CATEGORIA);
             }
 
-            printf("Deseja alterar o nível de dificuldade? (s/n):\n");
+            printf("Deseja alterar o nível de dificuldade? (digite s para sim e n para não): ");
             scanf(" %c", &opcao);
             setbuf(stdin, NULL);
             if (tolower(opcao) == 's'){
@@ -343,7 +343,7 @@ void excluirItem(BancoInformacoes *banco){
     for (int i = 0; i < banco->totalItens; i++){
         if (strcmp(banco->itens[i].resposta, busca) == 0){
             printf("\nItem encontrado: %s\n", banco->itens[i].resposta);
-            printf("Deseja realmente excluir este item? (s/n): ");
+            printf("Deseja realmente excluir este item? (digite s para sim e n para não): ");
             char opcao;
             scanf(" %c", &opcao);
             setbuf(stdin, NULL);
@@ -380,16 +380,17 @@ void excluirItem(BancoInformacoes *banco){
  *
  * @return void Esta função não retorna valor.
  */
-void salvarItensBinario(BancoInformacoes *banco, const char *nomeArquivo){
+void salvarItensBinario(BancoInformacoes *banco){
     if (banco == NULL || banco->totalItens == 0){
         printf("[Erro] Nenhum item disponível para salvar.\n");
         return;
     }
 
-    FILE *arquivo = fopen(nomeArquivo, "wb");
+    FILE *arquivo = fopen("jogoadvinhacao.dat", "wb");
+
     if (arquivo == NULL){
-        printf("[Erro] Não foi possível abrir o arquivo '%s' para escrita.\n", nomeArquivo);
-        return;
+        printf("[Erro] Não foi possível abrir o arquivo para escrita.\n");
+        exit(1);
     }
 
     fwrite(&banco->totalItens, sizeof(int), 1, arquivo);
@@ -398,7 +399,7 @@ void salvarItensBinario(BancoInformacoes *banco, const char *nomeArquivo){
     if (itensGravados != banco->totalItens){
         printf("[Erro] Nem todos os itens foram salvos corretamente.\n");
     } else {
-        printf("[OK] %d itens salvos com sucesso em '%s'.\n", banco->totalItens, nomeArquivo);
+        printf("[OK] %d itens salvos com sucesso em 'jogoadvinhacao'.\n", banco->totalItens);
     }
 
     fclose(arquivo);

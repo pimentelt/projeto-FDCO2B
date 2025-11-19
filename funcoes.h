@@ -81,7 +81,7 @@ void excluirItem(BancoInformacoes *banco);
 /**
  * @brief Salva os itens do banco em um arquivo binário.
  */
-void salvarItensBinario(BancoInformacoes *banco, const char *nomeArquivo);
+void salvarItensBinario(BancoInformacoes *banco);
 
 /**
  * @brief Carrega os itens de um arquivo binário para a memória.

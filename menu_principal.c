@@ -47,7 +47,7 @@ int main(){
             break;
         case 0:
             printf("Salvando dados do jogo para um arquivo binario.... \n");
-            salvarItensBinario(BancoInformacoes *banco, const char *nomeArquivo);
+            salvarItensBinario(*banco);
             break;
         default:
             printf("Opcao invalida, tente novamente !\n");
