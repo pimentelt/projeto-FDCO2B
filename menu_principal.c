@@ -6,9 +6,9 @@
 int main(){
 
     printf("Bora advinhar!!");
-    BancoInformacoes iformacoes;
-    BancoInformacoes* incializarBanco(void);
-    Item dadosAdvinha;
+    BancoInformacoes* banco;
+    BancoInformacoes* dados;
+    leArquivoCSV(*dados);
     
     int opcao;
 
@@ -27,20 +27,20 @@ int main(){
         switch (opcao)
         {
         case 1: 
-            inserirItem(BancoInformacoes *banco);
+            inserirItem(banco);
             break;
 
         case 2:
-            listarItens(BancoInformacoes *banco);
+            listarItens(banco);
             break;
         case 3: 
-            alterarItem(BancoInformacoes *banco);
+            alterarItem(banco);
             break;
         case 4:
-            pesquisaItem(BancoInformacoes *banco);
+            pesquisaItem(banco);
             break;
         case 5:
-           excluirItem(BancoInformacoes *banco);
+           excluirItem(banco);
             break;    
         case 6:
             printf("Vamos jogar!\n");
@@ -48,7 +48,7 @@ int main(){
             break;
         case 0:
             printf("Salvando dados do jogo para um arquivo binario.... \n");
-            salvarItensBinario(*banco);
+            salvarItensBinario(banco);
             break;
         default:
             printf("Opcao invalida, tente novamente !\n");

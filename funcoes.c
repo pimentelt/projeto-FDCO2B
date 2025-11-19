@@ -95,6 +95,7 @@ void leArquivoCSV(BancoInformacoes* dados){
     for (int i = 0; i < 40 ; i++){//não consegui puxar o ponteiro banco(que pelo visto é o contador)
                                 // da função anterior "BancoInformacoes* incializarBanco();"
                                 // 40 pois é o valor total de palavras a serem advinhadas contidas no arquivo CSV
+        
         //salvando os dados do CSV na estrutura Item
         fscanf(arqivoLeCSV,"%s ",dados[i].itens->resposta);
         fscanf(arqivoLeCSV,"%d ",dados[i].itens->nivel);
@@ -107,8 +108,6 @@ void leArquivoCSV(BancoInformacoes* dados){
     
     return;
 }
-
-
 
 
 /**
