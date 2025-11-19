@@ -87,22 +87,22 @@ BancoInformacoes* incializarBanco(){
     return banco;
 }
 
-void leArquivoCSV(BancoInformacoes incializarBanco, Item dadosBase){
-
-
-    FILE* arqivoLeCSV = fopen("dados_jogoadvinhacao.csv", "w");
+void leArquivoCSV(BancoInformacoes* dados){
+        
     
+    FILE* arqivoLeCSV = fopen("dados_jogoadvinhacao.csv", "r");
+ 
     for (int i = 0; i < 40 ; i++){//não consegui puxar o ponteiro banco(que pelo visto é o contador)
                                 // da função anterior "BancoInformacoes* incializarBanco();"
                                 // 40 pois é o valor total de palavras a serem advinhadas contidas no arquivo CSV
         //salvando os dados do CSV na estrutura Item
-        fscanf(arqivoLeCSV,"%s ",dadosBase[i].resposta);
-        fscanf(arqivoLeCSV,"%d ",dadosBase[i].nivel);
-        fscanf(arqivoLeCSV,"%s ",dadosBase[i].dica1);
-        fscanf(arqivoLeCSV,"%s ",dadosBase[i].dica2);
-        fscanf(arqivoLeCSV,"%s ",dadosBase[i].dica3);
-        fscanf(arqivoLeCSV,"%s ",dadosBase[i].dica4);
-        fscanf(arqivoLeCSV,"%s ",dadosBase[i].dica5);
+        fscanf(arqivoLeCSV,"%s ",dados[i].itens->resposta);
+        fscanf(arqivoLeCSV,"%d ",dados[i].itens->nivel);
+        fscanf(arqivoLeCSV,"%s ",dados[i].itens->dica1);
+        fscanf(arqivoLeCSV,"%s ",dados[i].itens->dica2);
+        fscanf(arqivoLeCSV,"%s ",dados[i].itens->dica3);
+        fscanf(arqivoLeCSV,"%s ",dados[i].itens->dica4);
+        fscanf(arqivoLeCSV,"%s ",dados[i].itens->dica5);
     }
     
     return;
