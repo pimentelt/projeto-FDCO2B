@@ -8,9 +8,9 @@ int main(){
     // 1. INICIALIZAR: Chama a função que dá o malloc e prepara a memória
     BancoInformacoes* banco = inicializarBanco(); 
     
-    // Verificação de segurança (opcional, mas recomendada)
+    // Verificação de segurança 
     if (banco == NULL) {
-        return 1; // Sai se falhou a alocação
+        exit(1); // Sai se falhou a alocação
     }
     
     // 2. salvando dados do arquivo 'dados_jogoadvinhacao.csv' nas estrutura 'Item'
