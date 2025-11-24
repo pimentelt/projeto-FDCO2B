@@ -41,7 +41,7 @@ typedef struct{
 /**
  * @brief Lê o arquivo "dados_jogoadvinhacao.csv" e salva os dados nas estruturas
  */
-void leArquivoCSV(BancoInformacoes* dados);
+void leArquivoCSV(BancoInformacoes* banco);
 
 /**
  * @brief Lê uma string do usuário de forma segura, convertendo-a para minúsculas.

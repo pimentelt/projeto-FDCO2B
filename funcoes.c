@@ -21,7 +21,6 @@
  * @note Requer o cabeçalho correspondente **funcoes.h**, que define as estruturas, tipos e constantes
  * utilizados em todas as funções aqui implementadas.
  * 
- * @version 0.1
  * @date 2025-11-03
  * 
  * @copyright Copyright (c) 2025
@@ -87,31 +86,41 @@ BancoInformacoes* inicializarBanco(){
     return banco;
 }
 
-void leArquivoCSV(BancoInformacoes* dados){
-        
-    
-    FILE* arquivoLeCSV = fopen("dados_jogoadvinhacao.csv", "r");
- 
-    for (int i = 0; i < 40 ; i++){//não consegui puxar o ponteiro banco(que pelo visto é o contador)
-                                // da função anterior "BancoInformacoes* incializarBanco();"
-                                // 40 pois é o valor total de palavras a serem advinhadas contidas no arquivo CSV
-        
-        //salvando os dados do CSV na estrutura Item
-        int tempNivel; // Variável temporária
+void leArquivoCSV(BancoInformacoes* banco){
 
-        fscanf(arquivoLeCSV,"%s ", dados[i].itens->resposta);
-        fscanf(arquivoLeCSV,"%d", &tempNivel); // Lê como inteiro
-        dados[i].itens->nivel = (Dificuldade)tempNivel; // Passa para a struct com cast        
-        fscanf(arquivoLeCSV,"%s ", dados[i].itens->dica1);
-        fscanf(arquivoLeCSV,"%s ", dados[i].itens->dica2);
-        fscanf(arquivoLeCSV,"%s ", dados[i].itens->dica3);
-        fscanf(arquivoLeCSV,"%s ", dados[i].itens->dica4);
-        fscanf(arquivoLeCSV,"%s ", dados[i].itens->dica5);
+    FILE* arquivoLeCSV = fopen("dados_jogoadvinhacao.csv", "r");
+    
+    if (arquivoLeCSV == NULL) {
+
+        printf("[Erro] Nao foi possivel abrir o arquivo CSV.\n");
+        exit(1);
+    }
+
+    // Buffer para pular a primeira linha (cabeçalho)
+    char buffer[1024];
+    fgets(buffer, 1024, arquivoLeCSV); 
+
+    int i = 0;
+    
+    // O formato " %[^;]" lê tudo até o próximo ponto e vírgula, aceitando espaços no nome
+    while (i < banco->capacidadeArmazenamento && 
+           fscanf(arquivoLeCSV, " %[^;];%d;%[^;];%[^;];%[^;];%[^;];%[^\n]", 
+           banco->itens[i].resposta,
+           (int*)&banco->itens[i].nivel, // Lê o número e joga no endereço do enum
+           banco->itens[i].dica1,
+           banco->itens[i].dica2,
+           banco->itens[i].dica3,
+           banco->itens[i].dica4,
+           banco->itens[i].dica5) == 7) 
+    {
+      
+        banco->totalItens++;
+        i++;
     }
     
-    return;
+    fclose(arquivoLeCSV);
+    printf("[OK] Dados carregados do CSV. Total de itens: %d\n", banco->totalItens);
 }
-
 
 /**
  * @brief Libera a memória alocada dinamicamente para a estrutura BancoInformacoes.
@@ -126,6 +135,7 @@ void leArquivoCSV(BancoInformacoes* dados){
  * @return void Esta função não retorna valor.
  */
 void liberarBanco(BancoInformacoes *banco){
+    
     if (banco){
         free(banco->itens);
         banco->itens = NULL;
@@ -315,7 +325,7 @@ void pesquisaItem(BancoInformacoes *banco){
     printf("Digite o nome do item a ser pesquisado.\n");
     lerString(buscaTemporario, TAM_MAX_RESPOSTA);
     for (int i = 0; i < (*banco).totalItens; i++){
-        if (strcmp(banco[i].itens->resposta, buscaTemporario) == 0){
+        if (strcmp(banco->itens[i].resposta, buscaTemporario) == 0){
             printf("Item encontrado\n");
         }
         
