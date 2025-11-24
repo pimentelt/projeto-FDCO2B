@@ -1,6 +1,6 @@
 /**
  * @file funcoes.c
- * @author Tarsila Paiva Pimentel
+ * @author Tarsila Paiva Pimentel e Érika Fernanda Santos de Souza
  * @brief Implementações das funções de gerenciamento de itens e do banco de dados do jogo *Perfil*.
  * 
  * Este módulo contém a implementação completa das rotinas responsáveis por gerenciar o banco dinâmico
@@ -27,7 +27,10 @@
  * @copyright Copyright (c) 2025
  * 
  */
-
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+#include <ctype.h>
 #include "funcoes.h"
 
 /**
@@ -65,7 +68,7 @@ void lerString(char texto[], int tamanho){
  * @return BancoInformacoes* Retorna um ponteiro para a estrutura BancoInformacoes
  * alocada e inicializada com sucesso, ou NULL em caso de falha na alocação de memória.
  */
-BancoInformacoes* incializarBanco(){
+BancoInformacoes* inicializarBanco(){
     BancoInformacoes *banco = malloc(sizeof(BancoInformacoes));
     if (banco == NULL){
         printf("[Erro] Houve um erro na alocação de memória para o banco.\n");//Se possível marcar como [Erro], pois fica mais legível
@@ -424,14 +427,14 @@ BancoInformacoes* carregarItensBinario(const char *nomeArquivo){
     FILE *arquivo = fopen(nomeArquivo, "rb");
     if (arquivo == NULL){
         printf("[Aviso] Arquivo '%s' não encontrado. Um novo banco será criado.\n", nomeArquivo);
-        return incializarBanco(); // cria um banco vazio
+        return inicializarBanco(); // cria um banco vazio
     }
 
     int totalItensLidos;
     if (fread(&totalItensLidos, sizeof(int), 1, arquivo) != 1){
         printf("[Erro] Falha ao ler o número total de itens.\n");
         fclose(arquivo);
-        return incializarBanco();
+        return inicializarBanco();
     }
 
     BancoInformacoes *banco = malloc(sizeof(BancoInformacoes));
@@ -453,7 +456,7 @@ BancoInformacoes* carregarItensBinario(const char *nomeArquivo){
     }
 
     size_t itensLidos = fread(banco->itens, sizeof(Item), totalItensLidos, arquivo);
-    if (itensLidos != totalItensLidos){
+    if (itensLidos != (size_t)totalItensLidos){
         printf("[Aviso] Nem todos os itens foram lidos corretamente. O banco pode estar incompleto.\n");
     } else {
         printf("[OK] %d itens carregados com sucesso de '%s'.\n", totalItensLidos, nomeArquivo);

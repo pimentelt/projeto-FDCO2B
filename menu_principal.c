@@ -5,11 +5,19 @@
 
 int main(){
 
-    printf("Bora advinhar!!");
-    BancoInformacoes* banco;
-    BancoInformacoes* dados;
-    leArquivoCSV(*dados);
+    // 1. INICIALIZAR: Chama a função que dá o malloc e prepara a memória
+    BancoInformacoes* banco = inicializarBanco(); 
     
+    // Verificação de segurança (opcional, mas recomendada)
+    if (banco == NULL) {
+        return 1; // Sai se falhou a alocação
+    }
+    
+    // 2. salvando dados do arquivo 'dados_jogoadvinhacao.csv' nas estrutura 'Item'
+    leArquivoCSV(banco);
+    
+    printf("Bora advinhar!!");//mensagem inicial de incentivo
+
     int opcao;
 
     do{

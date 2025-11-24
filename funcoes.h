@@ -51,7 +51,7 @@ void lerString(char texto[], int tamanho);
 /**
  * @brief Inicializa a estrutura BancoInformacoes alocando memória dinâmica.
  */
-BancoInformacoes* incializarBanco(void);
+BancoInformacoes* inicializarBanco(void);
 
 /**
  * @brief Libera toda a memória alocada pelo BancoInformacoes.
