@@ -2,7 +2,12 @@
 #include<stdlib.h>
 #include<string.h>
 #include "funcoes.h"
-
+/**
+ * @author Érika Fernanda Santos de Souza
+ * @brief Inicializa alocações, salva dados nas estruturas e apresenta menu de opções ao usuário
+ * @file menu_principal.c
+ * 
+ */
 int main(){
 
     // 1. INICIALIZAR: Chama a função que dá o malloc e prepara a memória
