@@ -90,20 +90,23 @@ BancoInformacoes* incializarBanco(){
 void leArquivoCSV(BancoInformacoes* dados){
         
     
-    FILE* arqivoLeCSV = fopen("dados_jogoadvinhacao.csv", "r");
+    FILE* arquivoLeCSV = fopen("dados_jogoadvinhacao.csv", "r");
  
     for (int i = 0; i < 40 ; i++){//não consegui puxar o ponteiro banco(que pelo visto é o contador)
                                 // da função anterior "BancoInformacoes* incializarBanco();"
                                 // 40 pois é o valor total de palavras a serem advinhadas contidas no arquivo CSV
         
         //salvando os dados do CSV na estrutura Item
-        fscanf(arqivoLeCSV,"%s ",dados[i].itens->resposta);
-        fscanf(arqivoLeCSV,"%d ",dados[i].itens->nivel);
-        fscanf(arqivoLeCSV,"%s ",dados[i].itens->dica1);
-        fscanf(arqivoLeCSV,"%s ",dados[i].itens->dica2);
-        fscanf(arqivoLeCSV,"%s ",dados[i].itens->dica3);
-        fscanf(arqivoLeCSV,"%s ",dados[i].itens->dica4);
-        fscanf(arqivoLeCSV,"%s ",dados[i].itens->dica5);
+        int tempNivel; // Variável temporária
+
+        fscanf(arquivoLeCSV,"%s ", dados[i].itens->resposta);
+        fscanf(arquivoLeCSV,"%d", &tempNivel); // Lê como inteiro
+        dados[i].itens->nivel = (Dificuldade)tempNivel; // Passa para a struct com cast        
+        fscanf(arquivoLeCSV,"%s ", dados[i].itens->dica1);
+        fscanf(arquivoLeCSV,"%s ", dados[i].itens->dica2);
+        fscanf(arquivoLeCSV,"%s ", dados[i].itens->dica3);
+        fscanf(arquivoLeCSV,"%s ", dados[i].itens->dica4);
+        fscanf(arquivoLeCSV,"%s ", dados[i].itens->dica5);
     }
     
     return;
@@ -153,7 +156,8 @@ void inserirItem(BancoInformacoes* banco){
     if (banco == NULL) return;
     if (banco->totalItens >= banco->capacidadeArmazenamento){
         int novaCapacidade = banco->capacidadeArmazenamento * 2;
-        Item *novoArray = realloc(banco->totalItens, novaCapacidade * sizeof(Item));
+        Item* novoArray = realloc(banco->itens, novaCapacidade * sizeof(Item));
+
         if (novoArray == NULL){
             printf("[Erro] Houve um erro na realocação de memória para expandir o banco.\n");
             return;
@@ -209,7 +213,7 @@ void listarItens(BancoInformacoes *banco){
         Item *item = &banco->itens[i];
         printf("Item %d:\n", i + 1);
         printf("Nome: %s\n", item->resposta);
-        printf("Categoria:\n", item->categoria);
+        printf("Categoria:%s \n", item->categoria);
         printf("Nível de Dificuldade: ");
         switch (item->nivel){
             case MUITOFACIL:   printf("Muito Fácil\n"); break;
@@ -394,7 +398,7 @@ void salvarItensBinario(BancoInformacoes *banco){
 
     fwrite(&banco->totalItens, sizeof(int), 1, arquivo);
 
-    size_t itensGravados = fwrite(banco->itens, sizeof(Item), banco->totalItens, arquivo);
+    int itensGravados = fwrite(banco->itens, sizeof(Item), banco->totalItens, arquivo);
     if (itensGravados != banco->totalItens){
         printf("[Erro] Nem todos os itens foram salvos corretamente.\n");
     } else {
