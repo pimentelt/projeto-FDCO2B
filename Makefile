@@ -1,23 +1,38 @@
+# Verifica o sistema operacional
+ifdef OS
+  OS := $(strip $(OS))
+else
+  OS := $(strip $(shell uname))
+endif
 
-main: menu_principal.o funcoes.o
-	@echo "Gerando arquivo executavel"
-	gcc menu_principal.o funcoes.o -o main
+BINNAME = menu_principal
 
+ifeq ($(OS),Windows_NT)
+	INCLUDE = -I./include/ -L./libwin
+	EXTRA_FLAGS = -Wall -Werror -Wextra -std=c99 -Wno-missing-braces -lraylib -lm -lopengl32 -lgdi32 -lwinmm
+	BIN = $(BINNAME).exe
+	RM = del /Q /F
+else
+	INCLUDE=-I./include/ -L./lib
+	EXTRA_FLAGS = -Wall -Werror -Wextra -lraylib -lGL -lm -lpthread -ldl -lrt -lX11
+	BIN =./$(BINNAME)
+	RM = rm -f
+endif
 
-menuprincipal.o: menu_principal.c funcoes.h
-	@echo "Compilando e gerando arq menu_principal.o"
-	gcc -c menu_principal.c
+SRC=./*.c
 
-funcoes.o: funcoes.c funcoes.h
-	@echo "Compilando e gerando arq funcoes.o"
-	gcc -c funcoes.c
-
-
-clean:
-	@echo "Apagando os objetos e executáveis antigos"
-	rm -f *.o main
-
+all:
+	gcc $(SRC) -g -lm $(EXTRA_FLAGS) $(INCLUDE) -o $(BIN)
 
 run:
-	@echo "Executando o programa..."
-	./main
+	$(BIN)
+
+debug:
+	gdb $(BIN)
+
+clean:
+	$(RM) $(BIN)
+
+
+valgrind:
+	valgrind --tool=memcheck --leak-check=full --track-origins=yes --show-leak-kinds=all --show-reachable=yes ./$(BIN)
