@@ -30,6 +30,7 @@
 #include <stdlib.h>
 #include <string.h>
 #include <ctype.h>
+#include <time.h>
 #include "funcoes.h"
 
 /**
@@ -55,6 +56,29 @@ void lerString(char texto[], int tamanho){
     }
     texto[strcspn(texto, "\n")] = '\0';
     setbuf(stdin, NULL);
+}
+
+/**
+ * @brief Remove todos os caracteres de espaço (' ') de uma string.
+ *
+ * Esta função percorre a string, copiando apenas os caracteres que não são espaço
+ * para o início da mesma string, efetivamente eliminando os espaços.
+ *
+ * @param str A string a ser processada.
+ * @return void
+ */
+void removerEspacos(char str[]){
+    int i, j = 0;
+    // Percorre a string
+    for (i = 0; str[i] != '\0'; i++) {
+        // Se o caractere atual NÃO for um espaço, ele é copiado
+        if (str[i] != ' ') {
+            str[j] = str[i];
+            j++;
+        }
+    }
+    // Finaliza a nova string no ponto correto
+    str[j] = '\0';
 }
 
 /**
@@ -86,13 +110,54 @@ BancoInformacoes* inicializarBanco(){
     return banco;
 }
 
-void leArquivoCSV(BancoInformacoes* banco){
-
-    FILE* arquivoLeCSV = fopen("dados_jogoadvinhacao.csv", "r");
+/**
+ * @brief Obtém um item aleatório do banco de informações para o jogo.
+ *
+ * A função inicializa a semente de números aleatórios (apenas uma vez)
+ * e calcula um índice aleatório válido dentro do total de itens carregados.
+ *
+ * @param banco Ponteiro para a estrutura BancoInformacoes.
+ * @return Item* Retorna um ponteiro para o item escolhido, ou NULL se o banco estiver vazio.
+ */
+Item* obterItemAleatorio(BancoInformacoes *banco){
+    if (banco == NULL || banco->totalItens == 0){
+        printf("[Aviso] O banco de informaçôes está vazio.\n");
+        return NULL;
+    }
     
-    if (arquivoLeCSV == NULL) {
+    //Inicialização da semente (isso aqui me deu dor de cabeça de entender)
+    static int seed_initialized = 0;
+    if (!seed_initialized) {
+        srand(time(NULL)); // Inicializa o gerador com o tempo atual.
+        seed_initialized = 1;//A biblioteca de tempo vai ser utilizada pra gerar um número pseudo-aleatório.
+    }
+    int indiceAleatorio = rand() % banco->totalItens;//Aqui é gerado o valor pseudo-aleatório.
+    return &banco->itens[indiceAleatorio];
 
-        printf("[Erro] Nao foi possivel abrir o arquivo CSV.\n");
+}
+
+/**
+ * @brief Carrega os dados de itens de um arquivo CSV para a estrutura BancoInformacoes.
+ * * Esta função abre o arquivo "dados_jogoadvinhacao.csv", pula o cabeçalho
+ * e lê sequencialmente os registros de itens (resposta, nível, 5 dicas).
+ * A leitura utiliza o formato CSV (ou TSV) onde os campos são separados por
+ * ponto e vírgula (`;`). Os itens são carregados no array dinâmico
+ * 'banco->itens' até o limite da capacidade alocada.
+ *
+ * O total de itens lidos é atualizado em 'banco->totalItens'.
+ *
+ * @note Em caso de falha na abertura do arquivo, a função exibe uma mensagem
+ * de erro e encerra o programa com exit(1).
+ *
+ * @param banco Ponteiro para a estrutura BancoInformacoes, onde os dados
+ * do arquivo serão armazenados. Deve ser um banco inicializado e com memória
+ * alocada para 'itens'.
+ * * @return void Esta função não retorna valor.
+ */
+void leArquivoCSV(BancoInformacoes* banco){
+    FILE* arquivoLeCSV = fopen("dados_jogoadvinhacao.csv", "r");
+    if (arquivoLeCSV == NULL) {
+        printf("[Erro] Não foi possivel abrir o arquivo CSV.\n");
         exit(1);
     }
 
@@ -101,19 +166,20 @@ void leArquivoCSV(BancoInformacoes* banco){
     fgets(buffer, 1024, arquivoLeCSV); 
 
     int i = 0;
-    
-    // O formato " %[^;]" lê tudo até o próximo ponto e vírgula, aceitando espaços no nome
+    int nivelTemporario; // Variável temporária para ler o nível
+
+    // O formato "%[^;]" lê tudo até o próximo ponto e vírgula.
     while (i < banco->capacidadeArmazenamento && 
            fscanf(arquivoLeCSV, " %[^;];%d;%[^;];%[^;];%[^;];%[^;];%[^\n]", 
            banco->itens[i].resposta,
-           (int*)&banco->itens[i].nivel, // Lê o número e joga no endereço do enum
+           &nivelTemporario, // Lê no endereço da variável int temporária
            banco->itens[i].dica1,
            banco->itens[i].dica2,
            banco->itens[i].dica3,
            banco->itens[i].dica4,
            banco->itens[i].dica5) == 7) 
     {
-      
+        banco->itens[i].nivel = (Dificuldade)nivelTemporario;
         banco->totalItens++;
         i++;
     }
@@ -135,7 +201,6 @@ void leArquivoCSV(BancoInformacoes* banco){
  * @return void Esta função não retorna valor.
  */
 void liberarBanco(BancoInformacoes *banco){
-    
     if (banco){
         free(banco->itens);
         banco->itens = NULL;
@@ -214,7 +279,7 @@ void inserirItem(BancoInformacoes* banco){
  */
 void listarItens(BancoInformacoes *banco){
     if (banco == NULL){
-        printf("[Erro] Não foi encontrado nenhum item cadastrado.\n");
+        printf("[Aviso] O banco de informaçôes está vazio.\n");
         return;
     }
     
@@ -223,7 +288,7 @@ void listarItens(BancoInformacoes *banco){
         Item *item = &banco->itens[i];
         printf("Item %d:\n", i + 1);
         printf("Nome: %s\n", item->resposta);
-        printf("Categoria:%s \n", item->categoria);
+        printf("Categoria: %s\n", item->categoria);
         printf("Nível de Dificuldade: ");
         switch (item->nivel){
             case MUITOFACIL:   printf("Muito Fácil\n"); break;
@@ -234,7 +299,7 @@ void listarItens(BancoInformacoes *banco){
             default:           printf("[Indefinido]\n"); break;
         }
     }
-    printf("Total de dicas: %d\n", (*banco).itens->totalDicas);
+
     printf("======================================\n\n");
 }
 
@@ -259,7 +324,7 @@ void listarItens(BancoInformacoes *banco){
  */
 void alterarItem(BancoInformacoes *banco){
     if (banco == NULL || banco->totalItens == 0){
-        printf("[Erro] Não há itens cadastrados para alterar.\n");
+        printf("[Aviso] O banco de informaçôes está vazio para alterações.\n");
         return;
     }
 
@@ -318,7 +383,7 @@ void alterarItem(BancoInformacoes *banco){
  */
 void pesquisaItem(BancoInformacoes *banco){
     if (banco == NULL || banco-> totalItens == 0){
-        printf("[Erro] O banco de informaçôes está vazio.\n");
+        printf("[Aviso] O banco de informaçôes está vazio.\n");
         return;
     }
     char buscaTemporario[TAM_MAX_RESPOSTA];
@@ -326,10 +391,10 @@ void pesquisaItem(BancoInformacoes *banco){
     lerString(buscaTemporario, TAM_MAX_RESPOSTA);
     for (int i = 0; i < (*banco).totalItens; i++){
         if (strcmp(banco->itens[i].resposta, buscaTemporario) == 0){
-            printf("Item encontrado\n");
+            printf("Item encontrado: %s\n", banco->itens[i].resposta);
         }
-        
     }
+    printf("[Aviso] Nenhum item encontrado com o nome informado.\n");
 }
 
 /**
@@ -345,7 +410,7 @@ void pesquisaItem(BancoInformacoes *banco){
  */
 void excluirItem(BancoInformacoes *banco){
     if (banco == NULL || banco->totalItens == 0){
-        printf("[Erro] Não há itens cadastrados para exclusão.\n");
+        printf("[Aviso] O banco de informaçôes está vazio para exclusão.\n");
         return;
     }
 
@@ -395,7 +460,7 @@ void excluirItem(BancoInformacoes *banco){
  */
 void salvarItensBinario(BancoInformacoes *banco){
     if (banco == NULL || banco->totalItens == 0){
-        printf("[Erro] Nenhum item disponível para salvar.\n");
+        printf("[Aviso] O banco de informaçôes está vazio.\n");
         return;
     }
 
@@ -475,3 +540,120 @@ BancoInformacoes* carregarItensBinario(const char *nomeArquivo){
     fclose(arquivo);
     return banco;
 }
+
+/**
+ * @brief Adiciona o resultado de um jogador ao ranking e salva em arquivo.
+ *
+ * Esta função carrega o ranking atual do arquivo binário, insere o novo registro,
+ * reordena a lista por pontuação (decrescente) e grava o resultado de volta no disco.
+ * @note A função mantém apenas um número fixo de melhores pontuações (ex: TOP 10).
+ * Se o novo score não for alto o suficiente, ele pode ser descartado.
+ *
+ * @param nome Nome do jogador a ser registrado (string).
+ * @param pontuacao Pontuação total acumulada na sessão.
+ * * @return void
+ */
+void salvarRanking(const char* nome, int pontuacao){
+    PosicaoRanking ranking[MAX_RANKING_ENTRIES + 1];
+    int totalEntries = 0;
+
+    FILE *arq = fopen(ARQUIVO_RANKING, "rb");
+    if (arq != NULL){
+        totalEntries = fread(ranking, sizeof(PosicaoRanking), MAX_RANKING_ENTRIES, arq);
+        fclose(arq);
+    }
+
+    PosicaoRanking novo;
+    strncpy(novo.nome, nome, TAM_MAX_NOME - 1);
+    novo.nome[TAM_MAX_NOME - 1] = '\0';
+    novo.pontuacao = pontuacao;
+
+    ranking[totalEntries] = novo;
+    totalEntries++;
+
+    //Aqui foi aplicado Bubble Sort (coisa de fora)
+    for (int i = 0; i < totalEntries - 1; i++){
+        for (int j = 0; j < totalEntries - i - 1; j++){
+            if (ranking[j].pontuacao < ranking[j + 1].pontuacao){
+                PosicaoRanking temp = ranking[j];
+                ranking[j] = ranking[j + 1];
+                ranking[j + 1] = temp;
+            }
+        }
+    }
+
+    //SÓ GRAVA OS TOP 10!!!
+    int entriesParaGravar = (totalEntries > MAX_RANKING_ENTRIES) ? MAX_RANKING_ENTRIES : totalEntries;
+    arq = fopen(ARQUIVO_RANKING, "wb");
+    if (arq != NULL){
+        fwrite(ranking, sizeof(PosicaoRanking), entriesParaGravar, arq);
+        fclose(arq);
+        printf("[Ranking] Pontuação salva! Você está na posição %d.\n", entriesParaGravar);
+    } else {
+        printf("[Erro] Falha ao salvar ranking.\n");
+    }
+}
+
+/**
+ * @brief Carrega o ranking do arquivo e exibe no terminal.
+ *
+ * Abre o arquivo binário de ranking, lê os registros armazenados e os imprime
+ * na saída padrão em formato de tabela (Posição | Nome | Pontos).
+ * Caso o arquivo não exista ou esteja vazio, exibe uma mensagem informando.
+ * * @return void
+ */
+void listarRanking(){
+    PosicaoRanking ranking[MAX_RANKING_ENTRIES];
+    int totalEntries = 0;
+
+    FILE *arq = fopen(ARQUIVO_RANKING, "rb");
+    if (arq != NULL) {
+        totalEntries = fread(ranking, sizeof(PosicaoRanking), MAX_RANKING_ENTRIES, arq);
+        fclose(arq);
+    }
+
+    printf("\n ====== HALL DA FAMA (TOP %d) ====== \n", MAX_RANKING_ENTRIES);
+    if (totalEntries == 0) {
+        printf("   [ Aviso ] Nenhum registro encontrado.\n");
+    } else {
+        printf("Pos | %-30s | Pontos\n", "Nome");
+        printf("---------------------------------------------\n");
+        for (int i = 0; i < totalEntries; i++) {
+            printf("#%02d | %-30s | %d\n", i + 1, ranking[i].nome, ranking[i].pontuacao);
+        }
+    }
+    printf("=============================================\n\n");
+}
+
+/**
+ * @brief Apaga permanentemente todo o histórico de ranking.
+ *
+ * Esta função remove o arquivo binário onde os recordes estão armazenados ("ranking.dat").
+ * É uma operação irreversível utilizada para zerar o placar do jogo.
+ * Geralmente inclui uma etapa de confirmação do usuário antes de deletar o arquivo.
+ * * @return void
+ */
+void formatarRanking(){
+    char confirmacao;
+    printf("\n  ATENÇÃO: Isso apagará todo o histórico de recordes.\n");
+    printf("Tem certeza? (S/N): ");
+    
+    setbuf(stdin, NULL);
+    scanf("%c", &confirmacao);
+    
+    if (confirmacao == 's' || confirmacao == 'S'){
+        // Remove o arquivo e verifica o resultado NA MESMA LINHA
+        if (remove(ARQUIVO_RANKING) == 0){
+            printf("[OK] Ranking formatado com sucesso.\n");
+        } else {
+            printf("[Aviso] O arquivo de ranking não existia ou não pôde ser apagado.\n");
+        }
+    } else {
+        printf("[Ação] Formatação cancelada.\n");
+    }
+}
+
+    fclose(arquivo);
+    return banco;
+}
+
