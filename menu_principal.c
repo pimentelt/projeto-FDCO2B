@@ -2,6 +2,7 @@
 #include<stdlib.h>
 #include<string.h>
 #include "funcoes.h"
+#include "grafica.h"
 /**
  * @author Érika Fernanda Santos de Souza
  * @brief Inicializa alocações, salva dados nas estruturas e apresenta menu de opções ao usuário
@@ -12,17 +13,20 @@ int main(){
 
     // 1. INICIALIZAR: Chama a função que dá o malloc e prepara a memória
     BancoInformacoes* banco = inicializarBanco(); 
-    
+    leArquivoCSV(banco);
+
     // Verificação de segurança 
-    if (banco == NULL) {
-        exit(1); // Sai se falhou a alocação
+    if (banco == NULL || banco->totalItens == 0) {
+        printf("Erro ao carregar CSV.\n");
     }
     
     // 2. salvando dados do arquivo 'dados_jogoadvinhacao.csv' nas estrutura 'Item'
-    leArquivoCSV(banco);
+    //leArquivoCSV(banco);
     
-    printf("Bora advinhar!!");//mensagem inicial de incentivo
+   // printf("Bora advinhar!!");//mensagem inicial de incentivo
+    //iniciarJogoGrafico(banco);
 
+    
     int opcao;
 
     do{
@@ -57,7 +61,7 @@ int main(){
             break;    
         case 6:
             printf("Vamos jogar!\n");
-          //coloca a função  que roda o jogo
+          iniciarJogoGrafico(banco); 
             break;
         case 0:
             printf("Salvando dados do jogo para um arquivo binario.... \n");
@@ -70,7 +74,7 @@ int main(){
     }//do 
     while (opcao != 0 );
 
-  
+  liberarBanco(banco);
 
     return 0;
 }

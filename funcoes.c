@@ -418,6 +418,12 @@ void salvarItensBinario(BancoInformacoes *banco){
     fclose(arquivo);
 }
 
+void processar_resposta(char* input, char* mensagem) {
+    // exemplo de implementação
+    printf("Você digitou: %c\n", input);
+    // aqui vai o código real que processa a resposta
+}
+
 /**
  * @brief Carrega os itens previamente salvos de um arquivo binário.
  *

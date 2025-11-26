@@ -88,6 +88,8 @@ void excluirItem(BancoInformacoes *banco);
  */
 void salvarItensBinario(BancoInformacoes *banco);
 
+void processar_resposta(char* input, char* mensagem);
+
 /**
  * @brief Carrega os itens de um arquivo binário para a memória.
  */
