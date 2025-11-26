@@ -54,17 +54,21 @@ Tarsila Paiva Pimentel – pimentelt@alunos.utfpr.edu.br
 ## 📁 Estrutura do Repositório
 projeto/
 ├── menu_principal.c   # Módulo do menu e gerenciamento das perguntas
+
 ├── jogo.c             # Lógica da partida
+
 ├── funcoes.c          # Funções auxiliares
+
 ├── funcoes.h          # Header das funções
+
 ├── questoes.csv       # Base de dados inicial do jogo
+
 └── Makefile           # Automação da compilação
 
 ## ⚙️ Como Compilar e Executar
-
+```bash
 ### 🐧 Ubuntu (Linux)
 
-```bash
 # Compilar cada módulo
 gcc -c menu_principal.c -o menu_principal.o -Wall -Wextra -std=c11
 gcc -c jogo.c -o jogo.o -Wall -Wextra -std=c11
