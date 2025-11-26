@@ -52,7 +52,9 @@ Tarsila Paiva Pimentel – pimentelt@alunos.utfpr.edu.br
 ---
 
 ## 📁 Estrutura do Repositório
+
 projeto/
+
 ├── menu_principal.c   # Módulo do menu e gerenciamento das perguntas
 
 ├── jogo.c             # Lógica da partida
