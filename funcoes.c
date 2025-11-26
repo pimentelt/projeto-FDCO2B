@@ -636,7 +636,7 @@ void listarRanking(){
  * Geralmente inclui uma etapa de confirmação do usuário antes de deletar o arquivo.
  * * @return void
  */
-void formatarRanking(BancoInformacoes* banco){
+void formatarRanking(){
     
     FILE* arquivoRanking = fopen(ARQUIVO_RANKING, "r+");
     char confirmacao;
