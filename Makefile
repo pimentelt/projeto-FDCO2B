@@ -1,38 +1,46 @@
-# Verifica o sistema operacional
+# Detecta o sistema operacional
 ifdef OS
-  OS := $(strip $(OS))
+	OS := $(strip $(OS))
 else
-  OS := $(strip $(shell uname))
+	OS := $(strip $(shell uname))
 endif
 
-BINNAME = menu_principal
+CC = gcc
+CFLAGS = -Wall -Wextra -std=c99
 
+SRC = jogo.c funcoes.c menu_principal.c
+OBJ = jogo.o funcoes.o menu_principal.o
+
+# Configurações por sistema
 ifeq ($(OS),Windows_NT)
-	INCLUDE = -I./include/ -L./libwin
-	EXTRA_FLAGS = -Wall -Werror -Wextra -std=c99 -Wno-missing-braces -lraylib -lm -lopengl32 -lgdi32 -lwinmm
-	BIN = $(BINNAME).exe
+	BIN = jogo.exe
 	RM = del /Q /F
+	RUN = ./jogo.exe
 else
-	INCLUDE=-I./include/ -L./lib
-	EXTRA_FLAGS = -Wall -Werror -Wextra -lraylib -lGL -lm -lpthread -ldl -lrt -lX11
-	BIN =./$(BINNAME)
+	BIN = jogo
 	RM = rm -f
+	RUN = ./jogo
 endif
 
-SRC=./*.c
+# Regra principal
+all: $(BIN)
 
-all:
-	gcc $(SRC) -g -lm $(EXTRA_FLAGS) $(INCLUDE) -o $(BIN)
+$(BIN): $(OBJ)
+	$(CC) $(OBJ) -o $(BIN)
 
+jogo.o: jogo.c funcoes.h
+	$(CC) $(CFLAGS) -c jogo.c
+
+funcoes.o: funcoes.c funcoes.h
+	$(CC) $(CFLAGS) -c funcoes.c
+
+menu_principal.o: menu_principal.c funcoes.h
+	$(CC) $(CFLAGS) -c menu_principal.c
+
+# Executar o programa
 run:
-	$(BIN)
+	$(RUN)
 
-debug:
-	gdb $(BIN)
-
+# Limpar arquivos gerados
 clean:
-	$(RM) $(BIN)
-
-
-valgrind:
-	valgrind --tool=memcheck --leak-check=full --track-origins=yes --show-leak-kinds=all --show-reachable=yes ./$(BIN)
+	$(RM) $(OBJ) $(BIN)
