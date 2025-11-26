@@ -59,7 +59,7 @@ int main(){
             listarRanking(); 
             break;
         case 8:
-            formatarRanking();
+            formatarRanking(banco);
             break;
         case 0:
             printf("Salvando dados do jogo para um arquivo binário...\n");

@@ -111,12 +111,6 @@ BancoInformacoes* inicializarBanco(){
     return banco;
 }
 
-<<<<<<< HEAD
-void leArquivoCSV(BancoInformacoes* banco){
-
-
-    FILE* arquivoLeCSV = fopen("dados_jogoadvinhacao.csv", "r");
-=======
 /**
  * @brief Obtém um item aleatório do banco de informações para o jogo.
  *
@@ -131,7 +125,6 @@ Item* obterItemAleatorio(BancoInformacoes *banco){
         printf("[Aviso] O banco de informaçôes está vazio.\n");
         return NULL;
     }
->>>>>>> d6381c0c837d6fd764bc0a3008c6863858bd3195
     
     //Inicialização da semente (isso aqui me deu dor de cabeça de entender)
     static int seed_initialized = 0;
@@ -209,10 +202,6 @@ void leArquivoCSV(BancoInformacoes* banco){
  * @return void Esta função não retorna valor.
  */
 void liberarBanco(BancoInformacoes *banco){
-<<<<<<< HEAD
-
-=======
->>>>>>> d6381c0c837d6fd764bc0a3008c6863858bd3195
     if (banco){
         free(banco->itens);
         banco->itens = NULL;
@@ -358,7 +347,7 @@ void alterarItem(BancoInformacoes *banco){
             setbuf(stdin, NULL);
             if (tolower(opcao) == 's'){
                 printf("Nova resposta: ");
-                lerString(banco->itens[i].resposta, TAM_MAX_RESPOSTA);
+                lerString((*banco).itens[i].resposta, TAM_MAX_RESPOSTA);
             }
 
             printf("Deseja alterar a categoria? (digite s para sim e n para não): ");
@@ -366,7 +355,7 @@ void alterarItem(BancoInformacoes *banco){
             setbuf(stdin, NULL);
             if (tolower(opcao) == 's'){
                 printf("Nova categoria:\n");
-                lerString(banco->itens[i].categoria, TAM_MAX_CATEGORIA);
+                lerString((*banco).itens[i].categoria, TAM_MAX_CATEGORIA);
             }
 
             printf("Deseja alterar o nível de dificuldade? (digite s para sim e n para não): ");
@@ -381,7 +370,7 @@ void alterarItem(BancoInformacoes *banco){
                     if (novoNivel < 1 || novoNivel > 5)
                         printf("[Erro] Valor inválido. Digite um número entre 1 e 5.\n");
                 } while (novoNivel < 1 || novoNivel > 5);
-                banco->itens[i].nivel = (Dificuldade)novoNivel;
+                banco->itens[i].nivel = (Dificuldade) novoNivel;
             }
             printf("\n[OK] Item alterado com sucesso!\n");
             return;
@@ -647,7 +636,9 @@ void listarRanking(){
  * Geralmente inclui uma etapa de confirmação do usuário antes de deletar o arquivo.
  * * @return void
  */
-void formatarRanking(){
+void formatarRanking(BancoInformacoes* banco){
+    
+    FILE* arquivoRanking = fopen(ARQUIVO_RANKING, "r+");
     char confirmacao;
     printf("\n  ATENÇÃO: Isso apagará todo o histórico de recordes.\n");
     printf("Tem certeza? (S/N): ");
@@ -665,9 +656,8 @@ void formatarRanking(){
     } else {
         printf("[Ação] Formatação cancelada.\n");
     }
-}
 
-    fclose(arquivo);
-    return banco;
+    fclose(arquivoRanking);
+   // return banco;
 }
 

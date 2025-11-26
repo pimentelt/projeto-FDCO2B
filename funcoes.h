@@ -146,7 +146,7 @@ void listarRanking();
 /**
  * @brief Apaga o arquivo de ranking (Formatar).
  */
-void formatarRanking();
+void formatarRanking(BancoInformacoes* banco);
 
 /**
  * @brief Remove espaço de palavras reconhecendo como iguais.
