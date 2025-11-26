@@ -34,7 +34,7 @@ O jogo seleciona aleatoriamente um personagem histórico (por exemplo: *Alan Tur
 ## 💻 Linguagem, Conteúdo e Dependências
 
 - **Linguagem:** C (Padrão C11)
-- **Bibliotecas padrão:** `stdio.h`, `stdlib.h`, `string.h`, `time.h`, `ctype.h`
+- **Bibliotecas padrão:** `stdio.h`, `stdlib.h`, `string.h`, `time.h`, `ctype.h`, `stdbool.h`
 - **Formato de dados:** CSV (entrada), binário (salvamento futuro)
 - **Plataforma:** Linux ou Windows (modo texto)
 - **Compilador sugerido:** GCC
@@ -50,3 +50,48 @@ Maria Júlia Ferraz Rocha – mariarocha.2023@alunos.utfpr.edu.br
 Tarsila Paiva Pimentel – pimentelt@alunos.utfpr.edu.br
 
 ---
+
+## 📁 Estrutura do Repositório
+
+projeto/
+
+├── menu_principal.c   # Módulo do menu e gerenciamento das perguntas
+
+├── jogo.c             # Lógica da partida
+
+├── funcoes.c          # Funções auxiliares
+
+├── funcoes.h          # Header das funções
+
+├── questoes.csv       # Base de dados inicial do jogo
+
+└── Makefile           # Automação da compilação
+
+## ⚙️ Como Compilar e Executar
+```bash
+### 🐧 Ubuntu (Linux)
+
+# Compilar cada módulo
+gcc -c menu_principal.c -o menu_principal.o -Wall -Wextra -std=c11
+gcc -c jogo.c -o jogo.o -Wall -Wextra -std=c11
+gcc -c funcoes.c -o funcoes.o -Wall -Wextra -std=c11
+
+# Ligar os objetos e gerar o executável
+gcc menu_principal.o jogo.o funcoes.o -o jogo
+
+# Executar
+./jogo
+
+### 🪟 Windows (CMD ou PowerShell)
+:: Compilar cada módulo
+gcc -c menu_principal.c -o menu_principal.o -Wall -Wextra -std=c11
+gcc -c jogo.c -o jogo.o -Wall -Wextra -std=c11
+gcc -c funcoes.c -o funcoes.o -Wall -Wextra -std=c11
+
+:: Ligar os objetos e gerar o executável
+gcc menu_principal.o jogo.o funcoes.o -o jogo.exe
+
+:: Executar
+.\jogo.exe
+
+--
