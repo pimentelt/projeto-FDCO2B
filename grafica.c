@@ -1,15 +1,16 @@
-#include "raylib.h"
-#include <stdio.h>
-#include <string.h>
-#include <ctype.h>
-#include "grafica.h"
-
 /**
  * @author Maria Julia Ferraz Rocha 
  * @brief Implementação da interface gráfica do jogo Perfil utilizando a biblioteca Raylib.
  * @file grafica.c
  * 
  */
+#include "raylib.h"
+#include <stdio.h>
+#include <string.h>
+#include <ctype.h>
+#include "grafica.h"
+
+
 typedef enum { TELA_MENU, TELA_JOGO, TELA_RESULTADO } EstadoGrafico;
 
 void iniciarJogoGrafico(BancoInformacoes* banco) {
