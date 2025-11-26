@@ -77,6 +77,7 @@ BancoInformacoes* inicializarBanco(){
     banco->capacidadeArmazenamento = 40;//Valor abitrário de capacidade inicial
     banco->totalItens = 0;
     banco->itens = malloc(banco->capacidadeArmazenamento * sizeof(Item));
+    printf("Deu certo função inicializarBanco\n");
 
     if (banco->itens == NULL){
         printf("[Erro] Houve um erro na alocação de memória para os itens.\n");
@@ -87,6 +88,7 @@ BancoInformacoes* inicializarBanco(){
 }
 
 void leArquivoCSV(BancoInformacoes* banco){
+
 
     FILE* arquivoLeCSV = fopen("dados_jogoadvinhacao.csv", "r");
     
@@ -117,7 +119,7 @@ void leArquivoCSV(BancoInformacoes* banco){
         banco->totalItens++;
         i++;
     }
-    
+    printf("Deu certo função leArquivoCSV\n");
     fclose(arquivoLeCSV);
     printf("[OK] Dados carregados do CSV. Total de itens: %d\n", banco->totalItens);
 }
@@ -135,7 +137,7 @@ void leArquivoCSV(BancoInformacoes* banco){
  * @return void Esta função não retorna valor.
  */
 void liberarBanco(BancoInformacoes *banco){
-    
+
     if (banco){
         free(banco->itens);
         banco->itens = NULL;
@@ -236,6 +238,8 @@ void listarItens(BancoInformacoes *banco){
     }
     printf("Total de dicas: %d\n", (*banco).itens->totalDicas);
     printf("======================================\n\n");
+
+    
 }
 
 /**
