@@ -385,6 +385,7 @@ void alterarItem(BancoInformacoes *banco){
  * @param banco 
  */
 void pesquisaItem(BancoInformacoes *banco){
+      
     if (banco == NULL || banco-> totalItens == 0){
         printf("[Aviso] O banco de informaçôes está vazio.\n");
         return;
@@ -412,6 +413,7 @@ void pesquisaItem(BancoInformacoes *banco){
  * * @return void
  */
 void excluirItem(BancoInformacoes *banco){
+
     if (banco == NULL || banco->totalItens == 0){
         printf("[Aviso] O banco de informaçôes está vazio para exclusão.\n");
         return;
@@ -462,6 +464,7 @@ void excluirItem(BancoInformacoes *banco){
  * @return void Esta função não retorna valor.
  */
 void salvarItensBinario(BancoInformacoes *banco){
+       
     if (banco == NULL || banco->totalItens == 0){
         printf("[Aviso] O banco de informaçôes está vazio.\n");
         return;
@@ -502,6 +505,7 @@ void salvarItensBinario(BancoInformacoes *banco){
  * @return BancoInformacoes* Retorna ponteiro para a estrutura BancoInformacoes carregada.
  */
 BancoInformacoes* carregarItensBinario(const char *nomeArquivo){
+    
     FILE *arquivo = fopen(nomeArquivo, "rb");
     if (arquivo == NULL){
         printf("[Aviso] Arquivo '%s' não encontrado. Um novo banco será criado.\n", nomeArquivo);

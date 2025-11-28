@@ -19,13 +19,13 @@
 #include <stdbool.h>//Para uso do booleano mais abaixo.
 #include <ctype.h> 
 #include "funcoes.h"
+#include <locale.h> 
 
 #define PONTOS_ACERTOS 100
 #define PENALIDADE_LETRA 20
 #define PENALIDADE_PULAR 30
 #define NUM_MAX_TENTATIVAS 5
 #define MAX_ACOES 10
-
 /**
  * @brief Revela a próxima letra oculta (sublinhado) na máscara de resposta.
  *
@@ -43,8 +43,13 @@
  * na string, da esquerda para a direita.
  * @note Espaços (' ') não são considerados caracteres a serem revelados 
  * (não são substituídos por '_').
+ * 
  */
+
+    
+
 void revelarLetra(const char* resposta, char* mascara) {
+    
     int len = strlen(resposta);
     int indice = -1;
 
@@ -82,6 +87,9 @@ void revelarLetra(const char* resposta, char* mascara) {
  * @note Cada jogador tem um número limitado de tentativas (@c NUM_MAX_TENTATIVAS) por item.
  */
 void jogarMultiplayer(BancoInformacoes* banco){
+    
+        setlocale(LC_ALL, "Portuguese");
+    
     // ETAPA 1: VERIFICAÇÃO INICIAL (COMENTEI TUDO ASSIM PORQUE ESSA FUNÇAO É ENORME)
     if (banco == NULL || banco->totalItens == 0){
         printf("[Aviso] Não há itens cadastrados para jogar.\n");

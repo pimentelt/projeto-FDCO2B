@@ -8,11 +8,14 @@
 #include<stdlib.h>
 #include<string.h>
 #include "funcoes.h"
+#include <locale.h> 
 
 int main(){
     // 1. INICIALIZAR: Chama a função que dá o malloc e prepara a memória
     BancoInformacoes* banco = inicializarBanco(); 
-    
+
+  //Definir a linguagem para Português  
+    setlocale(LC_ALL, "Portuguese");
     // Verificação de segurança 
     if (banco == NULL){
         exit(1); // Sai se falhou a alocação
