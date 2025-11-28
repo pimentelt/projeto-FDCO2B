@@ -1,4 +1,3 @@
-
 /**
  * @author Maria Julia Ferraz Rocha 
  * @brief Implementação da interface gráfica do jogo Perfil utilizando a biblioteca Raylib.
