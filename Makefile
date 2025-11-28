@@ -8,14 +8,15 @@ endif
 CC = gcc
 CFLAGS = -Wall -Wextra -std=c99
 
-SRC = jogo.c funcoes.c menu_principal.c
-OBJ = jogo.o funcoes.o menu_principal.o
+SRC = jogo.c funcoes.c menu_principal.c grafico.c
+OBJ = jogo.o funcoes.o menu_principal.o grafico.o
 
 # Configurações por sistema
 ifeq ($(OS),Windows_NT)
 	BIN = jogo.exe
 	RM = del /Q /F
 	RUN = ./jogo.exe
+	
 else
 	BIN = jogo
 	RM = rm -f
@@ -37,6 +38,8 @@ funcoes.o: funcoes.c funcoes.h
 menu_principal.o: menu_principal.c funcoes.h
 	$(CC) $(CFLAGS) -c menu_principal.c
 
+grafico.o: grafico.c funcoes.h
+	$(CC) $(CFLAGS) -c grafico.c
 # Executar o programa
 run:
 	$(RUN)

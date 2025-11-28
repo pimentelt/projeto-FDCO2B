@@ -8,7 +8,7 @@
 #include <stdio.h>
 #include <string.h>
 #include <ctype.h>
-#include "grafica.h"
+#include "funcoes.h"
 
 
 typedef enum { TELA_MENU, TELA_JOGO, TELA_RESULTADO } EstadoGrafico;

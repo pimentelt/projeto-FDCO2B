@@ -69,6 +69,11 @@ typedef struct {
 }PosicaoRanking;
 
 /**
+ * @author Maria Julia Ferraz Rocha
+ * @brief Cabeçalho da interface gráfica e definições de estados do jogo.
+ * */
+void iniciarJogoGrafico(BancoInformacoes* banco);
+/**
  * @brief Obtém um item aleatório do banco de informações para o jogo.
  */
 Item* obterItemAleatorio(BancoInformacoes* banco);
